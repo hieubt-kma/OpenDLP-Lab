@@ -1,0 +1,7 @@
+<Sysmon schemaversion="4.81">
+  <EventFiltering>
+    <FileCreate onmatch="include">
+      <TargetFilename condition="begin with">E:\</TargetFilename>
+    </FileCreate>
+  </EventFiltering>
+</Sysmon>

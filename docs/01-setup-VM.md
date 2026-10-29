@@ -44,6 +44,7 @@ sudo netplan apply
 ```
 
 ![check ip tĩnh](Images/image-1.png)
+
 ---
 ### 2. Windows 10
 
@@ -51,9 +52,12 @@ sudo netplan apply
 - Chọn `Ethernet` → `Properties` → `Internet Protocol Version 4 (TCP/IPv4)`.
 
 ![IP tĩnh](Images/image-2.png)
+
 - Windows VM ping Ubuntu 192.168.32.205 thành công.
+
 ![Windows => Ubuntu](Images/image-3.png)
 - Host Windows (máy thật) SSH vào Ubuntu thành công.
+
 ![SSH từ host](Images/image-4.png)
 
 ---
