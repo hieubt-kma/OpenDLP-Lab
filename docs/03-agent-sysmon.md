@@ -32,7 +32,7 @@ Get-Service WazuhSvc
 sudo /var/ossec/bin/agent_control -l
 ```
 
-![dlp-windows active](Images/image-8.png)
+![dlp-windows active](Images/image-4.png)
 
 - Agent DLP-Windows có ID 001, trạng thái Active, kết nối thành công với Wazuh Manager
 ---
