@@ -4,14 +4,14 @@
 ---
 ## Config Wazuh Agent
 - Mở `PowerShell Administrator`, tải và cài `Wazuh Agent`
-```cmd
+```powershell
 New-Item -ItemType Directory -Force C:\DLP-Lab\tools | Out-Null
 
 Invoke-WebRequest 'https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.11-1.msi' -OutFile C:\DLP-Lab\tools\wazuh-agent.msi
 ```
 
 - Cài đặt Agent và kết nối với `Manager`
-```cmd
+```powershell
 $p = Start-Process msiexec.exe -ArgumentList '/i "C:\DLP-Lab\tools\wazuh-agent.msi" /qn WAZUH_MANAGER="192.168.32.205" WAZUH_REGISTRATION_SERVER="192.168.32.205" WAZUH_AGENT_NAME="DLP-Windows"' -Wait -PassThru
 
 $p.ExitCode
@@ -19,7 +19,7 @@ $p.ExitCode
 
 - Cài đặt Wazuh Agent thành công với ExitCode = 0
 - Khởi động và kiểm tra Agent
-```cmd
+```powershell
 Start-Service WazuhSvc
 Get-Service WazuhSvc
 ```
@@ -28,7 +28,7 @@ Get-Service WazuhSvc
 
 ## Kiểm tra Agent
 - Trên Ubuntu, kiểm tra Agent đã kết nối: 
-```cmd
+```powershell
 sudo /var/ossec/bin/agent_control -l
 ```
 
@@ -42,7 +42,7 @@ sudo /var/ossec/bin/agent_control -l
 - Giải nén vào **C:\DLP-Lab\tools\Sysmon**
 -  Cấu hình file `sysmon_dlp.xml` trong `source/windows/sysmon/` để theo dõi việc tạo file trên **USB**.
 - Mở **PowerShell Administrator**:
-```cmd
+```powershell
 cd C:\DLP-Lab\tools\Sysmon
 .\Sysmon64.exe -s
 .\Sysmon64.exe -accepteula -i .\sysmon_dlp.xml
@@ -55,7 +55,7 @@ Get-Service Sysmon64
 ## Kiểm tra Sysmon
 - Kết nối **USB Meow (E:)** vào máy ảo Windows 10
 - Áp dụng cấu hình Sysmon 
-```cmd
+```powershell
 cd C:\DLP-Lab\tools\Sysmon
 .\Sysmon64.exe -c .\sysmon_dlp.xml
 ```

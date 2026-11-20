@@ -14,18 +14,18 @@
 ### 1. Ubuntu
 
 - Mở Terminal để kiểm tra card mạng và file cấu hình:
-```cmd
+```bash
 ip -br a
 ls /etc/netplan
 ```
-![card mạng - path file cấu hình](Images/image.png)
+![card mạng - path file cấu hình](Images/image-12.png)
 
 - Mở file Netplan để chỉnh sửa 
-```cmd
+```bash
 sudo nano /etc/netplan/00-installer-config.yaml
 ```
 - Cấu hình IP tĩnh cho Ubuntu 
-```cmd 
+```bash 
 network:
   version: 2
   ethernets:
@@ -39,11 +39,11 @@ network:
         addresses: [1.1.1.1, 8.8.8.8]
 ```
 - Lưu file, áp dụng cấu hình và kiểm tra IP:
-```cmd
+```bash
 sudo netplan apply
 ```
 
-![check ip tĩnh](Images/image-1.png)
+![check ip tĩnh](Images/image-13.png)
 
 ---
 ### 2. Windows 10
@@ -58,12 +58,9 @@ sudo netplan apply
 ![Windows => Ubuntu](Images/image-3.png)
 - Host Windows (máy thật) SSH vào Ubuntu thành công.
 
-![SSH từ host](Images/image-4.png)
+![SSH từ host](Images/image-14.png)
 
 ---
-## Các Port dùng trong lab 
-
-Có, nên thêm vào phần Setup VMware, nhưng viết ngắn gọn giống văn của bạn. Phần này chỉ giới thiệu các cổng sẽ dùng trong lab, chưa cần cấu hình hết.
 
 ### 3. Các cổng sử dụng trong lab
 

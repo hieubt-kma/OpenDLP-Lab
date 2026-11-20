@@ -1,0 +1,67 @@
+<group name="local,syslog,sshd,">
+  <rule id="100010" level="10">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-yara: alert</match>
+    <description>DLP Alert: YARA detected sensitive data in an unauthorized location</description>
+    <group>yara,dlp,</group>
+  </rule>
+
+  <rule id="100011" level="12">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: alert - Screenshot blocked</match>
+    <description>DLP Alert: Screen capture attempt containing sensitive data was blocked</description>
+    <group>yara,dlp,screen_guard,</group>
+  </rule>
+
+  <rule id="100012" level="12">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: alert - Emergency override</match>
+    <description>DLP CRITICAL: User activated an Emergency Override to capture restricted screen content</description>
+    <group>yara,dlp,screen_guard,override,</group>
+  </rule>
+
+  <rule id="100018" level="9">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: alert - Clipboard Blocked</match>
+    <description>DLP Alert: Sensitive data copy attempt to an untrusted application blocked (Context Logged).</description>
+    <group>dlp,clipboard,context_aware,</group>
+  </rule>
+
+  <rule id="100019" level="10">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: alert - Secret clipboard override</match>
+    <description>DLP Warning: User activated emergency clipboard override (10 consecutive copies detected).</description>
+    <group>dlp,clipboard,override,</group>
+  </rule>
+
+  <rule id="100020" level="12">
+    <decoded_as>json</decoded_as>
+    <field name="module">network_dlp</field>
+    <field name="dlp_action">Blocked</field>
+    <description>Network DLP: Data leak BLOCKED [$(file_path)] (Matched Rule: $(rule_matched)) from Source IP: $(src_ip) to: $(destination_url)</description>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,hipaa_security_164.312.a.1,dlp_network,</group>
+  </rule>
+
+  <rule id="100015" level="12">
+    <if_group>windows</if_group>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.system.eventID">^11$</field>
+    <field name="win.eventdata.targetFilename">^E:</field>
+    <description>DLP ALERT: File written to USB/External drive via Sysmon - $(win.eventdata.targetFilename)</description>
+    <group>usb_dlp,sysmon,</group>
+  </rule>
+
+  <rule id="100016" level="12">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: alert - SENSITIVE DATA DETECTED ON USB</match>
+    <description>DLP CRITICAL: Top Secret data exfiltration to USB detected!</description>
+    <group>usb_dlp,yara,</group>
+  </rule>
+
+  <rule id="100017" level="7">
+    <decoded_as>windows-date-format</decoded_as>
+    <match>wazuh-dlp: action_success - USB file deleted</match>
+    <description>DLP INFO: The system has deleted the matching file after it was written on the USB drive.</description>
+    <group>usb_dlp,action_success,</group>
+  </rule>
+</group>

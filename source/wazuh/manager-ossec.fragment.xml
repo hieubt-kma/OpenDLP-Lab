@@ -1,0 +1,105 @@
+
+<syscheck>
+  <disabled>yes</disabled>
+</syscheck>
+
+<localfile>
+  <location>/var/ossec/logs/active-responses.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/network_dlp.log</location>
+</localfile>
+
+<command>
+  <name>win_yara_quick</name>
+  <executable>run_yara_quick.bat</executable>
+</command>
+
+<command>
+  <name>win_yara_full</name>
+  <executable>run_yara_full.bat</executable>
+</command>
+
+<command>
+  <name>win_quarantine</name>
+  <executable>run_quarantine.bat</executable>
+</command>
+
+<command>
+  <name>win_restore</name>
+  <executable>run_restore.bat</executable>
+</command>
+
+<command>
+  <name>win_usb_scan</name>
+  <executable>run_usb_scan.bat</executable>
+</command>
+
+<command>
+  <name>win_yara_scan</name>
+  <executable>run_yara_launcher.bat</executable>
+</command>
+
+<command>
+  <name>win_isolate</name>
+  <executable>isolate_network.cmd</executable>
+  <timeout_allowed>no</timeout_allowed>
+</command>
+
+<command>
+  <name>win_disable</name>
+  <executable>disable_machine.cmd</executable>
+  <timeout_allowed>no</timeout_allowed>
+</command>
+
+<active-response>
+  <command>win_usb_scan</command>
+  <location>local</location>
+  <rules_id>100015</rules_id>
+</active-response>
+
+<active-response>
+  <command>win_yara_scan</command>
+  <location>local</location>
+  <rules_id>554,550</rules_id>
+</active-response>
+
+<active-response>
+  <command>win_yara_quick</command>
+  <location>local</location>
+</active-response>
+
+<active-response>
+  <command>win_yara_full</command>
+  <location>local</location>
+</active-response>
+
+<active-response>
+  <command>win_quarantine</command>
+  <location>local</location>
+</active-response>
+
+<active-response>
+  <command>win_restore</command>
+  <location>local</location>
+</active-response>
+
+<active-response>
+  <command>win_isolate</command>
+  <location>local</location>
+</active-response>
+
+<active-response>
+  <command>win_disable</command>
+  <location>local</location>
+</active-response>
+
+<integration>
+  <name>custom-telegram</name>
+  <level>3</level>
+  <rule_id>100010,100011,100012,100015,100016,100017,100018,100019,100020</rule_id>
+  <alert_format>json</alert_format>
+</integration>

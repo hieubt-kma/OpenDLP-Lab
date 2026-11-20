@@ -1,0 +1,22 @@
+
+<localfile>
+  <location>active-response\active-responses.log</location>
+  <log_format>syslog</log_format>
+</localfile>
+
+<localfile>
+  <log_format>syslog</log_format>
+  <location>C:\Users\Public\yara_debug.log</location>
+</localfile>
+
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+
+<syscheck>
+  <disabled>no</disabled>
+  <directories realtime="yes" check_all="yes">C:\SecretData</directories>
+  <frequency>43200</frequency>
+  <scan_on_start>yes</scan_on_start>
+</syscheck>
