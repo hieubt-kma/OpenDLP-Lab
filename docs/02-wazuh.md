@@ -10,7 +10,7 @@ sudo apt update
 sudo apt install -y curl ca-certificates unzip
 mkdir -p ~/dlp-install
 cd ~/dlp-install
-curl -fLO https://packages.wazuh.com/4.3/wazuh-install.sh
+curl -fLO https://packages.wazuh.com/4.14/wazuh-install.sh
 ```
 - Tạo file cấu hình:
 ```bash
@@ -42,7 +42,7 @@ sudo bash wazuh-install.sh --generate-config-files
 ```
 - Cài Indexer
 ```bash
-sudo bash wazuh-install.sh --wazuh-indexer wazuh-indexer
+sudo bash wazuh-install.sh --wazuh-indexer wazuh-indexernodes
 ```
 - Khởi tạo cluster
 ```bash
@@ -50,13 +50,13 @@ sudo bash wazuh-install.sh --start-cluster
 ```
 - Cài Manager
 ```bash
-sudo bash wazuh-install.sh --wazuh-server wazuh-manager
+sudo bash wazuh-install.sh --wazuh-server wazuh-managernodes
 ```
 - Cài Dashboard
 ```bash
 sudo bash wazuh-install.sh --wazuh-dashboard wazuh-dashboard
 ```
-![alt text](Images/image-5.png)
+![alt text](Images/image.png)
 
 ---
 ## Kiểm tra
@@ -65,7 +65,7 @@ sudo bash wazuh-install.sh --wazuh-dashboard wazuh-dashboard
 sudo systemctl is-active wazuh-manager wazuh-indexer wazuh-dashboard filebeat
 ```
 
-![active - manager, indexer, dashboard](Images/image-7.png)
+![active - manager, indexer, dashboard](Images/image-1.png)
 
 - Kiểm tra kết nối Filebeat đến Wazuh Indexer:
 ```bash
