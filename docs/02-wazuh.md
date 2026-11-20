@@ -74,4 +74,4 @@ sudo filebeat test output
 
 Từ máy host (Windows ngoài máy thật), truy cập https://192.168.32.205 và đăng nhập Wazuh Dashboard thành công.
 
-![Wazuh Login](Images/image-6.png)
+![Wazuh Login Succeed](Images/image-5.png)

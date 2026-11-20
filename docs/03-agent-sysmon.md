@@ -7,7 +7,7 @@
 ```powershell
 New-Item -ItemType Directory -Force C:\DLP-Lab\tools | Out-Null
 
-Invoke-WebRequest 'https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.11-1.msi' -OutFile C:\DLP-Lab\tools\wazuh-agent.msi
+Invoke-WebRequest 'https://packages.wazuh.com/4.x/windows/wazuh-agent-4.14.10-1.msi' -OutFile C:\DLP-Lab\tools\wazuh-agent.msi
 ```
 
 - Cài đặt Agent và kết nối với `Manager`
@@ -40,7 +40,7 @@ sudo /var/ossec/bin/agent_control -l
 ## Cài đặt Sysmon
 - Tải Sysmon từ [Microsoft Sysinternals](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)
 - Giải nén vào **C:\DLP-Lab\tools\Sysmon**
--  Cấu hình file `sysmon_dlp.xml` trong `source/windows/sysmon/` để theo dõi việc tạo file trên **USB**.
+- Cấu hình file [`sysmon_dlp.xml`](../source/windows/sysmon/sysmon_dlp.xml) trong [`source/windows/sysmon/`](../source/windows/sysmon/) để theo dõi việc tạo file trên **USB**.
 - Mở **PowerShell Administrator**:
 ```powershell
 cd C:\DLP-Lab\tools\Sysmon
