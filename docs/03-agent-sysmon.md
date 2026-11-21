@@ -3,9 +3,9 @@
 - Mục đích: thu thập và gửi các event từ `Windows` về `Wazuh Manager` (192.168.32.205)
 ---
 ## Config Wazuh Agent
-- Mở `PowerShell Administrator`, tải và cài `Wazuh Agent`
+- Mở `PowerShell Administrator`, tạo thư mục chứa tool và thư mục dữ liệu cho FIM:
 ```powershell
-New-Item -ItemType Directory -Force C:\DLP-Lab\tools | Out-Null
+New-Item -ItemType Directory -Force C:\DLP-Lab\tools, C:\SecretData | Out-Null
 
 Invoke-WebRequest 'https://packages.wazuh.com/4.x/windows/wazuh-agent-4.14.10-1.msi' -OutFile C:\DLP-Lab\tools\wazuh-agent.msi
 ```
@@ -40,12 +40,12 @@ sudo /var/ossec/bin/agent_control -l
 ## Cài đặt Sysmon
 - Tải Sysmon từ [Microsoft Sysinternals](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)
 - Giải nén vào **C:\DLP-Lab\tools\Sysmon**
-- Cấu hình file [`sysmon_dlp.xml`](../source/windows/sysmon/sysmon_dlp.xml) trong [`source/windows/sysmon/`](../source/windows/sysmon/) để theo dõi việc tạo file trên **USB**.
+- Cấu hình file [sysmon_dlp.xml`](../source/windows/sysmon/sysmon_dlp.xml) trong [source/windows/sysmon/](../source/windows/sysmon/) để theo dõi việc tạo file trên **USB**.
 - Mở **PowerShell Administrator**:
 ```powershell
 cd C:\DLP-Lab\tools\Sysmon
 .\Sysmon64.exe -s
-.\Sysmon64.exe -accepteula -i .\sysmon_dlp.xml
+.\Sysmon64.exe -accepteula -i C:\DLP-Lab\repo\source\windows\sysmon\sysmon_dlp.xml
 Get-Service Sysmon64
 ```
 
@@ -57,7 +57,7 @@ Get-Service Sysmon64
 - Áp dụng cấu hình Sysmon 
 ```powershell
 cd C:\DLP-Lab\tools\Sysmon
-.\Sysmon64.exe -c .\sysmon_dlp.xml
+.\Sysmon64.exe -c C:\DLP-Lab\repo\source\windows\sysmon\sysmon_dlp.xml
 ```
 
 - Tạo file `test.txt` trên **USB** để kiểm tra 

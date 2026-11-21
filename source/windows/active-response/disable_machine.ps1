@@ -2,7 +2,13 @@ $LogFile = "C:\Users\Public\yara_debug.log"
 
 function Write-Log {
   param([string]$Msg)
-  Add-Content -Path $LogFile -Value $Msg -ErrorAction SilentlyContinue
+  try {
+    $fs = New-Object System.IO.FileStream($LogFile, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+    $sw = New-Object System.IO.StreamWriter($fs)
+    $sw.WriteLine($Msg)
+    $sw.Close()
+    $fs.Close()
+  } catch {}
 }
 
 Write-Log "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') INFO: Initiating Session 0 Bypass Lockdown..."

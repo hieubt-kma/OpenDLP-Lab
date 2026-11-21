@@ -1,11 +1,16 @@
 
+
 $LogFile = "C:\Users\Public\yara_debug.log"
 $BlacklistFile = "C:\Users\Public\blacklist.txt"
 
 function Write-Log {
     param([string]$Message)
     try {
-        Add-Content -Path $LogFile -Value $Message -ErrorAction Stop
+        $fs = New-Object System.IO.FileStream($LogFile, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $sw = New-Object System.IO.StreamWriter($fs)
+        $sw.WriteLine($Message)
+        $sw.Close()
+        $fs.Close()
     } catch {}
 }
 

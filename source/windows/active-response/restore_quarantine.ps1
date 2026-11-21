@@ -7,7 +7,11 @@ $RuleFile = "C:\Program Files (x86)\ossec-agent\shared\sensitive_data.yar"
 function Write-Log {
   param([string]$Msg)
   try {
-    Add-Content -Path $LogFile -Value $Msg -ErrorAction Stop
+    $fs = New-Object System.IO.FileStream($LogFile, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+    $sw = New-Object System.IO.StreamWriter($fs)
+    $sw.WriteLine($Msg)
+    $sw.Close()
+    $fs.Close()
   } catch {}
 }
 
