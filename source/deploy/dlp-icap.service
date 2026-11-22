@@ -1,0 +1,19 @@
+[Unit]
+Description=DLP lab icap
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dlp
+Group=dlp
+WorkingDirectory=/opt/dlp/repo/source/icap
+EnvironmentFile=/etc/dlp/icap.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/dlp/venv/bin/python /opt/dlp/repo/source/icap/icap_server.py
+Restart=on-failure
+RestartSec=5
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
