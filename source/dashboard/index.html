@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wazuh DLP - Dashboard</title>
+<style>
+:root {
+  --bg: #02060d;
+  --blue: #4db8ff;
+  --blue-soft: #a6dcff;
+  --blue-dim: #2f7fbf;
+  --line: #0d2f4d;
+  --line-strong: #1b5c8f;
+  --danger: #ff6478;
+  --glow: 0 0 12px rgba(77, 184, 255, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 2rem 1.5rem 3rem;
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgba(30, 110, 180, 0.22), transparent 65%),
+    var(--bg);
+  color: var(--blue);
+  font: 15px/1.6 "Cascadia Code", "Fira Code", Consolas, "Courier New", monospace;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(120, 200, 255, 0.03) 0 1px, transparent 1px 3px);
+}
+
+::selection {
+  background: rgba(77, 184, 255, 0.35);
+  color: #ffffff;
+}
+
+h1 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  letter-spacing: 0.08em;
+  color: var(--blue-soft);
+  text-shadow: var(--glow);
+}
+
+h1::after {
+  content: "_";
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+h1 + p {
+  margin: 0 0 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--blue-dim);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+input,
+button {
+  padding: 0.55rem 0.85rem;
+  font: inherit;
+  color: var(--blue);
+  background: rgba(5, 16, 29, 0.85);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+
+input {
+  flex: 1 1 220px;
+  min-width: 170px;
+}
+
+input::placeholder {
+  color: var(--blue-dim);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: var(--glow);
+}
+
+button {
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+button:hover,
+button:focus-visible {
+  background: var(--blue);
+  color: #02121f;
+  box-shadow: var(--glow);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--blue-soft);
+  outline-offset: 2px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.4rem;
+}
+
+th,
+td {
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: var(--blue-soft);
+  background: rgba(13, 47, 77, 0.35);
+  border-bottom-color: var(--line-strong);
+}
+
+tbody tr:hover td {
+  background: rgba(77, 184, 255, 0.05);
+}
+
+td:first-child {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: var(--blue-soft);
+}
+
+td:nth-child(2) {
+  word-break: break-word;
+}
+
+td:last-child {
+  white-space: nowrap;
+}
+
+.critical {
+  color: var(--danger);
+}
+
+#status {
+  margin: 1.1rem 0 0;
+  font-size: 0.9rem;
+  color: var(--blue-dim);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  input {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  h1::after {
+    animation: none;
+  }
+
+  button {
+    transition: none;
+  }
+}
+</style>
+</head>
+<body>
+<h1>WAZUH DLP_CONSOLE.EXE</h1>
+<p>Data Loss Prevention — Tactical View</p>
+<div class="toolbar">
+  <input id="agent" placeholder="Windows agent ID (vd. 001)" aria-label="Windows agent ID">
+  <button onclick="scan('quick')">INIT QUICK SCAN</button>
+  <button onclick="scan('full')">INIT FULL SCAN</button>
+  <input id="filter" placeholder="Search paths, rules..." oninput="render()">
+  <button onclick="load()">REFRESH</button>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>TIMESTAMP</th>
+      <th>TARGET</th>
+      <th>RULE</th>
+      <th>SEVERITY</th>
+      <th>ACTION</th>
+    </tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+<p id="status" role="status">Các nút chỉ gửi lệnh. Kiểm tra kết quả trên Windows.</p>
+<script>
+const API = (window.DLP_API_URL || '/api');
+let logs = [];
+
+const statusLine = document.querySelector('#status');
+
+async function api(path, payload) {
+  const options = payload
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+    : {};
+  const r = await fetch(API + path, options);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || 'API request failed');
+  return data;
+}
+
+async function load() {
+  try {
+    logs = await api('/alerts');
+    render();
+  } catch (e) {
+    statusLine.textContent = e.message;
+  }
+}
+
+function render() {
+  const q = document.querySelector('#filter').value.toLowerCase();
+  const rows = document.querySelector('#rows');
+  rows.replaceChildren();
+  for (const x of logs.filter(x => JSON.stringify(x).toLowerCase().includes(q))) {
+    const tr = document.createElement('tr');
+    for (const value of [x.time, x.target, x.rule, x.level]) {
+      const td = document.createElement('td');
+      td.textContent = String(value ?? '');
+      tr.append(td);
+    }
+    const action = document.createElement('td');
+    if (x.level >= 10 && x.agent_id && x.agent_id !== '000' && /^[A-Za-z]:[\\/]/.test(x.target || '')) {
+      const button = document.createElement('button');
+      button.textContent = 'QUARANTINE';
+      button.addEventListener('click', () => quarantine(x.target, x.agent_id));
+      action.append(button);
+    }
+    tr.append(action);
+    rows.append(tr);
+  }
+}
+
+async function scan(t) {
+  try {
+    const r = await api('/scan', { agent_id: document.querySelector('#agent').value.trim(), scan_type: t });
+    statusLine.textContent = r.message;
+  } catch (e) {
+    statusLine.textContent = e.message;
+  }
+}
+
+async function quarantine(p, id) {
+  if (confirm('Gửi lệnh cách ly tới agent ' + id + '?\n' + p)) {
+    try {
+      const r = await api('/quarantine', { agent_id: id, file_path: p });
+      statusLine.textContent = r.message;
+    } catch (e) {
+      statusLine.textContent = e.message;
+    }
+  }
+}
+
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>

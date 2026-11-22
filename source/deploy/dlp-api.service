@@ -1,0 +1,19 @@
+[Unit]
+Description=DLP lab api
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dlp
+Group=dlp
+WorkingDirectory=/opt/dlp/repo/source/dashboard
+EnvironmentFile=/etc/dlp/api.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/dlp/venv/bin/python /opt/dlp/repo/source/dashboard/app.py
+Restart=on-failure
+RestartSec=5
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
