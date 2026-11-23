@@ -1,0 +1,19 @@
+[Unit]
+Description=DLP lab bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dlp
+Group=dlp
+WorkingDirectory=/opt/dlp/repo/source/telegram
+EnvironmentFile=/etc/dlp/telegram.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/dlp/venv/bin/python /opt/dlp/repo/source/telegram/dlp_bot.py
+Restart=on-failure
+RestartSec=5
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+from datetime import datetime, timezone, timedelta
+import html
+import json
+import os
+import sys
+
+import requests
+
+TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
+
+TARGET_RULE_IDS = {
+    "100010",
+    "100011",
+    "100012",
+    "100015",
+    "100016",
+    "100017",
+    "100018",
+    "100019",
+    "100020",
+}
+
+
+def format_time(raw):
+    try:
+        return (
+            datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            .astimezone(timezone(timedelta(hours=7)))
+            .strftime("%Y-%m-%d %H:%M:%S")
+        )
+    except Exception:
+        return raw
+
+
+def find_path(alert, log):
+    if alert.get("syscheck"):
+        return alert["syscheck"].get("path", "Unknown")
+
+    if "Target Path: [" in log:
+        return log.split("Target Path: [")[-1].split("]")[0]
+
+    if "Source Path: [" in log:
+        return log.split("Source Path: [")[-1].split("]")[0]
+
+    if " in " in log:
+        return log.split(" in ")[-1].strip()
+
+    return (
+        alert.get("data", {})
+        .get("win", {})
+        .get("eventdata", {})
+        .get("targetFilename", alert.get("data", {}).get("file_path", "Unknown"))
+    )
+
+
+def build_message(alert):
+    rule = alert.get("rule", {})
+    rule_id = str(rule.get("id", "0"))
+    level = rule.get("level", 0)
+    severity = "CRITICAL" if level >= 12 else "WARNING" if level >= 8 else "INFO"
+    alert_time = format_time(alert.get("timestamp", "Unknown"))
+    path = find_path(alert, alert.get("full_log", ""))
+
+    lines = [
+        "<b>WAZUH DLP ALERT</b>",
+        "───────────────",
+        f"<b>{severity}</b> (Level: {level})",
+        f"<b>Rule ID:</b> <code>{rule_id}</code>",
+        f"<b>Time:</b> <code>{alert_time}</code>",
+        f"<b>Agent:</b> <code>{html.escape(alert.get('agent', {}).get('name', 'Wazuh Server'))}</code>",
+        f"<b>Description:</b> {html.escape(rule.get('description', 'N/A'))}",
+    ]
+
+    if path != "Unknown":
+        lines.append(f"<b>File/Path:</b> <code>{html.escape(path)}</code>")
+
+    return "\n".join(lines)
+
+
+def send_alert(payload):
+    try:
+        response = requests.post(
+            f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+            json=payload,
+            timeout=10,
+        )
+        if not response.ok or not response.json().get("ok"):
+            print("custom-telegram: Telegram rejected the alert", file=sys.stderr)
+            return False
+    except (requests.RequestException, ValueError):
+        print("custom-telegram: unable to send alert", file=sys.stderr)
+        return False
+
+    return True
+
+
+def main():
+    try:
+        with open(sys.argv[1], encoding="utf-8") as stream:
+            alert = json.load(stream)
+    except Exception:
+        sys.exit(0)
+
+    rule = alert.get("rule", {})
+    rule_id = str(rule.get("id", "0"))
+    if rule_id not in TARGET_RULE_IDS:
+        sys.exit(0)
+
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": build_message(alert),
+        "parse_mode": "HTML",
+    }
+
+    src = alert.get("data", {}).get("srcip")
+    if src:
+        payload["reply_markup"] = {
+            "inline_keyboard": [
+                [
+                    {
+                        "text": "Check VirusTotal",
+                        "url": f"https://www.virustotal.com/gui/search/{src}",
+                    }
+                ]
+            ]
+        }
+
+    if not send_alert(payload):
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
