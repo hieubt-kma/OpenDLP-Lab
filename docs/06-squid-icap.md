@@ -3,6 +3,8 @@
 - Dựng **ICAP server** dùng **YARA** để kiểm tra nội dung upload và quyết định cho qua/chặn
 - Gửi log `Blocked` về **Wazuh Dashboard** qua rule id `100020`
 
+![luồng Squid/ICAP](Images/image-45.png)
+
 ---
 ## Chuẩn bị source và ICAP
 - Chuyển các file sau vào Ubuntu tại `~/dlp-source`:

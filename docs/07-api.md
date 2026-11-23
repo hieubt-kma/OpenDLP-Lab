@@ -3,6 +3,8 @@
 - Giao diện gửi `Quick Scan`, `Quarantine`, `Restore` qua **Wazuh API**.
 - API bind `127.0.0.1:5000`; host vào qua SSH tunnel.
 
+![mô hình API 3 tầng](Images/image-46.png)
+
 ---
 ## Chuẩn bị source và môi trường
 - Chuyển vào Ubuntu tại `~/dlp-source`:

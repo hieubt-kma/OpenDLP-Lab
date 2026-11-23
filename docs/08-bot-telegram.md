@@ -4,6 +4,8 @@
 - Bot nhận lệnh `/quarantine`, `/restore`, `/listquarantine` và gửi tiếp tới **API** ở bước 07.
 - Bot chỉ xử lý chat riêng trùng `TELEGRAM_CHAT_ID` trong `/etc/dlp/telegram.env`.
 
+![2 luồng Telegram](Images/image-47.png)
+
 ---
 ## Chuẩn bị source
 - Đặt các tệp sau vào `~/dlp-source` trên Ubuntu:

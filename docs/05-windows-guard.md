@@ -3,6 +3,8 @@
 - Chạy Guard trên Windows VM để kiểm soát clipboard và chụp màn hình đối với dữ liệu nhạy cảm.
 - Gửi log, cảnh báo về **Wazuh Dashboard** thông qua **Wazuh Agent**.
 
+![luồng chặn screenshot](Images/image-44.png)
+
 ---
 ## Biên dịch Guard
 - Trên Windows VM, cài **Visual Studio Build Tools** với thành phần **Desktop development with C++** (MSVC và Windows SDK).

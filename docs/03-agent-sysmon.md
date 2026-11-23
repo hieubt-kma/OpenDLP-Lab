@@ -1,6 +1,9 @@
 # Windows Agent & Sysmon
 - Cài đặt **Wazuh Agent** và **Sysmon** trên máy `Windows VM` (192.168.32.204)
 - Mục đích: thu thập và gửi các event từ `Windows` về `Wazuh Manager` (192.168.32.205)
+
+![kiến trúc Wazuh Agent](Images/image-42.png)
+
 ---
 ## Config Wazuh Agent
 - Mở `PowerShell Administrator`, tạo thư mục chứa tool và thư mục dữ liệu cho FIM:

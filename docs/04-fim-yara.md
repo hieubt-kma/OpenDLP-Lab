@@ -3,6 +3,9 @@
 - Sử dụng YARA để phát hiện dữ liệu nhạy cảm
 - Cấu hình Active Response để tự động thực thi script khi phát hiện sự kiện
 - Gửi log và cảnh báo về Wazuh Dashboard
+
+![luồng FIM → YARA → Alert](Images/image-43.png)
+
 ---
 
 ## Cài đặt YARA
@@ -36,7 +39,7 @@ Copy-Item "$agentRoot\ossec.conf" "$agentRoot\ossec.conf.before-dlp"
 notepad "$agentRoot\ossec.conf"
 ```
 
--  file [Cấu hình Wazuh Agent](../../source/windows/wazuh-agent-ossec.fragment.xml)
+-  File [Cấu hình Wazuh Agent](../source/wazuh-agent-ossec.fragment.xml)
 
 - Tìm block `<syscheck>` đã có, bật FIM theo dõi thư mục C:\SecretData:
 ```notepad

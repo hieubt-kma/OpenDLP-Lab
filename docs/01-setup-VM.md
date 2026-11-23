@@ -1,5 +1,5 @@
 # Setup Vmware
-
+![sơ đồ mạng lab](Images/hinh-3-3-dlp-lab.png)
 - Để thực hành bài này, mình dùng VMware để tạo 2 máy ảo gồm Ubuntu 22.04 và Windows 10
 - Cả hai máy đều dùng card mạng NAT(NMnet8) để kết nối với nhau và có thể truy cập được Internet.
 - Mình sử dụng dải mạng `192.168.32.0/24` và đặt IP tĩnh cho từng máy: 

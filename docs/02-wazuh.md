@@ -1,7 +1,7 @@
 # Wazuh
 - Cài **Wazuh** trên Ubuntu như một giải pháp **SIEM (Security Information and Event Management)**, bao gồm ba thành phần chính: `Wazuh Manager`, `Wazuh Indexer` và `Wazuh Dashboard`.
 - Hệ thống được triển khai trên Ubuntu nhằm thu thập, giám sát, phân tích và quản lý các event. 
-
+![kiến trúc Wazuh Server](Images/image-41.png)
 ## Cấu hình 
 
 - Cài công cụ và tải **Wazuh**
